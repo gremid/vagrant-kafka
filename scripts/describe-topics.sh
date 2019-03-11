@@ -1,3 +1,3 @@
 #!/bin/bash
 
-$KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper vkc-zk1:2181,vkc-zk2:2181,vkc-zk3:2181
+$KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper vkc-1:2181,vkc-2:2181,vkc-3:2181

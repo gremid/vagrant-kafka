@@ -3,20 +3,10 @@ Vagrant - Kafka
 
 Vagrant configuration to setup a partitioned Apache Kafka installation with clustered Apache Zookeeper.
 
-This configuration will start and provision six CentOS6 VMs:
+This configuration will start and provision three CentOS6 VMs:
 
-* Three hosts forming a three node Apache Zookeeper Quorum (Replicated ZooKeeper)
-* Three Apache Kafka nodes with one broker each
-
-Each host is a Centos 6.9 64-bit VM provisioned with JDK 8 and Kafka 1.1.0. 
-
-Here we will be using the verion of Zookeeper that comes pre-packaged with Kafka. This will be Zookeeper version 3.4.10 for the version of Kafka we use. 
-
-Prerequisites
--------------------------
-
-* Vagrant (tested with 2.0.2) **[make sure you are on 2.x.x version of Vagrant]**
-* VirtualBox (tested with 5.1.12)
+* forming a three node Apache Zookeeper Quorum (Replicated ZooKeeper)
+* and three Apache Kafka nodes with one broker each
 
 Setup
 -------------------------
@@ -29,22 +19,16 @@ Here is the mapping of VMs to their private IPs:
 
 | VM Name    | Host Name | IP Address |
 | ---------- | --------- | ---------- |
-| zookeeper1 | vkc-zk1   | 10.30.3.2  |
-| zookeeper2 | vkc-zk2   | 10.30.3.3  |
-| zookeeper3 | vkc-zk3   | 10.30.3.4  |
-| broker1    | vkc-br1   | 10.30.3.30 |
-| broker2    | vkc-br2   | 10.30.3.20 |
-| broker3    | vkc-br3   | 10.30.3.10 |
+| node-1     | vkc-1     | 10.30.3.2  |
+| node-2     | vkc-2     | 10.30.3.3  |
+| node-3     | vkc-3     | 10.30.3.4  |
 
 Hosts file entries:
 
 ```
-10.30.3.2	vkc-zk1
-10.30.3.3 	vkc-zk2
-10.30.3.4 	vkc-zk3
-10.30.3.30 	vkc-br1
-10.30.3.20 	vkc-br2
-10.30.3.10 	vkc-br3
+10.30.3.2	vkc-1
+10.30.3.3 	vkc-2
+10.30.3.4 	vkc-3
 ```
 
 Zookeeper servers bind to port 2181. Kafka brokers bind to port 9092. 
@@ -57,20 +41,16 @@ First test that all nodes are up ```vagrant status```. The result should be simi
 ```
 Current machine states:
 
-zookeeper1                running (virtualbox)
-zookeeper2                running (virtualbox)
-zookeeper3                running (virtualbox)
-broker1                   running (virtualbox)
-broker2                   running (virtualbox)
-broker3                   running (virtualbox)
-
+node-1                running (virtualbox)
+node-2                running (virtualbox)
+node-3                running (virtualbox)
 
 This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run 'vagrant status NAME''.
 ```
 
-Login to any host with e.g., ```vagrant ssh broker1```. Some scripts have been included for convenience:
+Login to any host with e.g., ```vagrant ssh node-1```. Some scripts have been included for convenience:
 
 * Create a new topic ```/vagrant/scripts/create-topic.sh <topic name>``` (create as many as you see fit)
 
@@ -156,10 +136,10 @@ done
 
 Let's explore other ways to ingest data to Kafa from the command line. 
 
-Login to any of the 6 nodes
+Login to any of the 3 nodes
 
 ```bash
-vagrant ssh zookeeper1
+vagrant ssh node-1
 ```
 
 Create a topic 
@@ -172,7 +152,7 @@ Send data to the Kafka topic
 
 ```bash
 echo "Yet another line from stdin" | $KAFKA_HOME/bin/kafka-console-producer.sh \
-   --topic test-one --broker-list vkc-br1:9092,vkc-br2:9092,vkc-br3:9092
+   --topic test-one --broker-list vkc-1:9092,vkc-2:9092,vkc-3:9092
 ```
 
 You can then test that the line was added by running the consumer
@@ -202,7 +182,7 @@ Redirecing this output to Kafka creates a basic form of a streaming producer.
 
 ```bash
 vmstat -a 1 -n 100 | $KAFKA_HOME/bin/kafka-console-producer.sh \
-   --topic test-one --broker-list vkc-br1:9092,vkc-br2:9092,vkc-br3:9092 &
+   --topic test-one --broker-list vkc-1:9092,vkc-2:9092,vkc-3:9092 &
 ```
 
 While the producer runs in the background you can start the consumer to see what happens

@@ -4,8 +4,8 @@ echo "downloading kafka...$KAFKA_VERSION"
 
 #download kafka binaries if not present
 if [ ! -f  $KAFKA_TARGET/$KAFKA_NAME.tgz ]; then
-   mkdir -p $KAFKA_TARGET
-   wget -O "$KAFKA_TARGET/$KAFKA_NAME.tgz" http://apache.mirrors.hoobly.com/kafka/"$KAFKA_VERSION/$KAFKA_NAME.tgz"
+    mkdir -p $KAFKA_TARGET    
+    wget -O "$KAFKA_TARGET/$KAFKA_NAME.tgz" http://artfiles.org/apache.org/kafka/"$KAFKA_VERSION/$KAFKA_NAME.tgz"
 fi
 
 echo "installing JDK and Kafka..."
